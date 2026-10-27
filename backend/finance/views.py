@@ -1,14 +1,14 @@
 from decimal import Decimal
 
 from django.db.models import Sum
-from rest_framework import generics
+from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Category, Transaction
 from .serializers import CategorySerializer, TransactionSerializer
-
+from .auth_serializers import RegisterSerializer
 
 class CategoryListView(generics.ListAPIView):
     serializer_class = CategorySerializer
@@ -97,4 +97,20 @@ class FinanceSummaryView(APIView):
             "income": str(income),
             "expenses": str(expenses),
             "balance": str(income - expenses),
+        })
+class RegisterView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class CurrentUserView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
         })

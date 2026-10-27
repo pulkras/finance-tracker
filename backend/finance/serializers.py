@@ -28,7 +28,6 @@ class TransactionSerializer(serializers.ModelSerializer):
     category_id = serializers.PrimaryKeyRelatedField(
         source="category",
         queryset=Category.objects.all(),
-        write_only=True,
     )
 
     type_display = serializers.CharField(
