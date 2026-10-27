@@ -1,10 +1,14 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   ArrowLeftRight,
   Wallet,
   ChartNoAxesCombined,
+  LogOut,
+  UserRound,
 } from "lucide-react";
+
+import { useAuth } from "../context/AuthContext";
 
 const navigation = [
   {
@@ -21,6 +25,14 @@ const navigation = [
 ];
 
 export default function Sidebar() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navigate("/login", { replace: true });
+  }
+
   return (
     <aside className="sidebar">
       <div className="brand">
@@ -61,10 +73,31 @@ export default function Sidebar() {
           <ChartNoAxesCombined size={20} />
         </div>
 
-        <div>
+        <div className="sidebar-bottom-text">
           <strong>Finance Tracker</strong>
           <p>Управляй своими финансами</p>
         </div>
+      </div>
+
+      <div className="sidebar-user">
+        <div className="sidebar-user-avatar">
+          <UserRound size={18} />
+        </div>
+
+        <div className="sidebar-user-info">
+          <strong>{user?.username || "Пользователь"}</strong>
+          <span>{user?.email || "Мой аккаунт"}</span>
+        </div>
+
+        <button
+          type="button"
+          className="icon-button"
+          onClick={handleLogout}
+          title="Выйти"
+          aria-label="Выйти из аккаунта"
+        >
+          <LogOut size={18} />
+        </button>
       </div>
     </aside>
   );
